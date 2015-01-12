@@ -1,7 +1,7 @@
 /* Big test trivium.h
  * Example: 
- * encrypt - ./bigtest -t 1 -b 1000000 -i file1 -o file2
- * decrypt - ./bigtest -t 2 -b 1000000 -i file2 -o file3
+ * encrypt - ./bigtest_2 -t 1 -b 1000000 -i file1 -o file2
+ * decrypt - ./bigtest_2 -t 2 -b 1000000 -i file2 -o file3
 */
 
 #include <stdio.h>
@@ -58,7 +58,7 @@ help(void)
 	printf("\t--block(-b) - block size data read from the file. By default = 10000\n");
 	printf("\t--input(-i) - input file\n");
 	printf("\t--output(-o) - output file\n");
-	printf("Example: ./bigtest -t 1 -b 1000 -i 1.txt -o crypt or ./bigtest -t 2 -b 1000 -i crypt -o decrypt\n\n");
+	printf("Example: ./bigtest_2 -t 1 -b 1000 -i 1.txt -o crypt or ./bigtest_2 -t 2 -b 1000 -i crypt -o decrypt\n\n");
 }
 	   
 int
