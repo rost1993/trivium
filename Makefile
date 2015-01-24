@@ -3,9 +3,10 @@ CFLAGS=-Wall -O2
 SOURCES=./trivium_sources
 
 MAIN_OBJS=trivium.o main.o
-MAIN_DEVELOPER_OBJS=$(SOURCES)/trivium.o $(SOURCES)/ecrypt-sync.o $(SOURCES)/main.o
 BIGTEST_OBJS=bigtest.o trivium.o
-BIGTEST_DEVELOPER_OBJS=$(SOURCES)/trivium.o $(SOURCES)/ecrypt-sync.o $(SOURCES)/bigtest_2.o
+
+MAIN_DEVELOPER_OBJS=$(patsubst %, $(SOURCES)/%, trivium.o ecrypt-sync.o main.o)
+BIGTEST_DEVELOPER_OBJS=$(patsubst %, $(SOURCES)/%, trivium.o ecrypt-sync.o bigtest_2.o)
 
 MAIN=main
 BIGTEST=bigtest
