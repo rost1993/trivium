@@ -18,6 +18,16 @@
 
 #define TRIVIUM		80
 
+// Selecting the byte order
+#if __BYTE_ORDER == __BIG_ENDIAN
+#define U32TO32(x)								\
+	((x << 24) | ((x << 8) & 0xFF0000) | ((x >> 8) & 0xFF00) | (x >> 24))
+#elif __BYTE_ORDER == __LITTLE_ENDIAN
+#define U32TO32(x)	(x)
+#else
+#error unsupported byte order
+#endif
+
 #define U8TO32_LITTLE(p) 	     	\
 	(((uint32_t)((p)[0])) 	   | 	\
 	((uint32_t)((p)[1]) << 8)  | 	\
@@ -176,7 +186,7 @@ trivium_encrypt(struct trivium_context *ctx, const uint8_t *buf, uint32_t buflen
 	for(; buflen >= 4; buflen -= 4, buf += 4, out += 4) {
 		WORK_2(w, z);
 		
-		*(uint32_t *)(out + 0) = *(uint32_t *)(buf + 0) ^ z;
+		*(uint32_t *)(out + 0) = *(uint32_t *)(buf + 0) ^ U32TO32(z);
 	}
 
 	if(buflen) {
