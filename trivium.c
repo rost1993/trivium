@@ -1,4 +1,5 @@
-/* This program implements the Trivium algorithm.
+/* 
+ * This program implements the Trivium algorithm.
  * Author Christophe De Canniere and Bart Preneel Katholieke Universiteit Leuven.
  * The Trivium home page - http://www.ecrypt.eu.org/stream/.
  * ---------------------
@@ -72,11 +73,11 @@
 }
 
 // Macro generate keystream (z)
-#define WORK_2(w, z) {		\
-	uint32_t t1, t2, t3;	\
-	T(w);			\
-	z = t1 ^ t2 ^ t3;	\
-	UPDATE(w);		\
+#define WORK_2(w, z) {			\
+	uint32_t t1, t2, t3;		\
+	T(w);				\
+	z = t1 ^ t2 ^ t3;		\
+	UPDATE(w);			\
 }
 
 /* 
@@ -204,5 +205,44 @@ void
 trivium_decrypt(struct trivium_context *ctx, const uint8_t *buf, uint32_t buflen, uint8_t *out)
 {
 	trivium_encrypt(ctx, buf, buflen, out);
+}
+
+#if __BYTE_ORDER == __BIG_ENDIAN
+#define PRINT_U32TO32(x)\
+	(printf("%02x %02x %02x %02x ", (x >> 24), ((x >> 16) & 0xFF), ((x >> 8) & 0xFF), (x & 0xFF)))
+#else
+#define PRINT_U32TO32(x)\
+	(printf("%02x %02x %02x %02x ", (x & 0xFF), ((x >> 8) & 0xFF), ((x >> 16) & 0xFF), (x >> 24)))
+#endif
+
+// Test vectors print
+void
+trivium_test_vectors(struct trivium_context *ctx)
+{
+	uint32_t z, w[10];
+	int i;
+	
+	memcpy(w, ctx->w, sizeof(w));
+
+	printf("\nTest vectors for the Trivium:\n");
+
+	printf("\nKey:       ");
+
+	for(i = 0; i < 10; i++)
+		printf("%02x ", ctx->key[i]);
+	
+	printf("\nIV:        ");
+
+	for(i = 0; i < 10; i++)
+		printf("%02x ", ctx->iv[i]);
+
+	printf("\nKeystream: ");
+
+	for(i = 0; i < 10; i++) {
+		WORK_2(w, z);
+		PRINT_U32TO32(U32TO32(z));
+	}
+	
+	printf("\n\n");
 }
 

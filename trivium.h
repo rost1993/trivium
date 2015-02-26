@@ -16,4 +16,6 @@ int trivium_set_key_and_iv(struct trivium_context *ctx, const uint8_t *key, cons
 void trivium_encrypt(struct trivium_context *ctx, const uint8_t *buf, uint32_t buflen, uint8_t *out);
 void trivium_decrypt(struct trivium_context *ctx, const uint8_t *buf, uint32_t buflen, uint8_t *out);
 
+void trivium_test_vectors(struct trivium_context *ctx);
+
 #endif
