@@ -82,13 +82,15 @@
 
 /* 
  * Trivium context 
- * keylen - chiper key length
+ * keylen - chiper key length in bytes
+ * ivlen - vector initialization length in bytes
  * key - chiper key
  * iv - initialization vector
  * w - array of intermediate calculations
 */
 struct trivium_context {
 	int keylen;
+	int ivlen;
 	uint8_t key[10];
 	uint8_t iv[10];
 	uint32_t w[10];
@@ -99,7 +101,7 @@ struct trivium_context *
 trivium_context_new(void)
 {
 	struct trivium_context *ctx;
-	ctx = malloc(sizeof(*ctx));
+	ctx = (struct trivium_context *)malloc(sizeof(*ctx));
 
 	if(ctx == NULL)
 		return NULL;
@@ -127,10 +129,16 @@ trivium_keysetup(struct trivium_context *ctx)
 
 	memset(s, 0, sizeof(s));
 
-	for(i = 0; i < 10; i++) {
+	/*for(i = 0; i < 10; i++) {
 		s[i] = ctx->key[i];
 		s[i + 12] = ctx->iv[i];
-	}
+	}*/
+
+	for(i = 0; i < ctx->keylen; i++)
+		s[i] = ctx->key[i];
+	
+	for(i = 0; i < ctx->ivlen; i++)
+		s[i + 12] = ctx->iv[i];
 
 	s[37] = 0x70;
 	
@@ -154,10 +162,15 @@ trivium_keysetup(struct trivium_context *ctx)
 // Fill the trivium context (key and iv)
 // Return value: 0 (if all is well), -1 is all bad
 int
-trivium_set_key_and_iv(struct trivium_context *ctx, const uint8_t *key, const int keylen, const uint8_t iv[10])
+trivium_set_key_and_iv(struct trivium_context *ctx, const uint8_t *key, const int keylen, const uint8_t iv[10], const int ivlen)
 {
-	if(keylen <= TRIVIUM)
+	if((keylen > 0) && (keylen <= TRIVIUM))
 		ctx->keylen = keylen;
+	else
+		return -1;
+	
+	if((ivlen > 0) && (ivlen <= 10))
+		ctx->ivlen = ivlen;
 	else
 		return -1;
 	
@@ -179,8 +192,7 @@ trivium_set_key_and_iv(struct trivium_context *ctx, const uint8_t *key, const in
 void
 trivium_encrypt(struct trivium_context *ctx, const uint8_t *buf, uint32_t buflen, uint8_t *out)
 {
-	int i;
-	uint32_t z, w[10];
+	uint32_t z, w[10], i;
 
 	memcpy(w, ctx->w, sizeof(w));
 
@@ -219,8 +231,7 @@ trivium_decrypt(struct trivium_context *ctx, const uint8_t *buf, uint32_t buflen
 void
 trivium_test_vectors(struct trivium_context *ctx)
 {
-	uint32_t z, w[10];
-	int i;
+	uint32_t z, w[10], i;
 	
 	memcpy(w, ctx->w, sizeof(w));
 

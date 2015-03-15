@@ -57,14 +57,14 @@ main(void)
 		exit(1);
 	}
 	
-	if(trivium_set_key_and_iv(ctx, (uint8_t *)key, 10, iv)) {
+	if(trivium_set_key_and_iv(ctx, (uint8_t *)key, 10, iv, 10)) {
 		printf("Trivium context filling error!\n");
 		exit(1);
 	}
 
 	trivium_encrypt(ctx, buf, BUFLEN, out1);
 
-	if(trivium_set_key_and_iv(ctx, (uint8_t *)key, 10, iv)) {
+	if(trivium_set_key_and_iv(ctx, (uint8_t *)key, 10, iv, 10)) {
 		printf("Trivium context filling error!\n");
 		exit(1);
 	}
