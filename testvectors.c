@@ -26,14 +26,21 @@ main(void)
 		exit(1);
 	}
 
-	if(trivium_set_key_and_iv(ctx, key1, 10, iv1)) {
+	if(trivium_set_key_and_iv(ctx, key1, 10, iv1, 10)) {
 		printf("Trivium context filling error!\n");
 		exit(1);
 	}
 	
 	trivium_test_vectors(ctx);
 
-	if(trivium_set_key_and_iv(ctx, key2, 10, iv2)) {
+	trivium_context_free(&ctx);
+
+	if((ctx = trivium_context_new()) == NULL) {
+		printf("Memory allocation error!\n");
+		exit(1);
+	}
+
+	if(trivium_set_key_and_iv(ctx, key2, 10, iv2, 10)) {
 		printf("Trivium context filling error!\n");
 		exit(1);
 	}
