@@ -44,7 +44,7 @@ time_stop(void)
 int
 main(void)
 {
-	struct trivium_context *ctx;
+	struct trivium_context ctx;
 
 	memset(buf, 'q', sizeof(buf));
 	memset(key, 'k', sizeof(key));
@@ -52,26 +52,23 @@ main(void)
 
 	time_start();
 
-	if((ctx = trivium_context_new()) == NULL) {
-		printf("Memory allocation error!\n");
-		exit(1);
-	}
-	
-	if(trivium_set_key_and_iv(ctx, (uint8_t *)key, 10, iv, 10)) {
+	trivium_init(&ctx);
+
+	if(trivium_set_key_and_iv(&ctx, (uint8_t *)key, 10, iv, 10)) {
 		printf("Trivium context filling error!\n");
 		exit(1);
 	}
 
-	trivium_encrypt(ctx, buf, BUFLEN, out1);
+	trivium_encrypt(&ctx, buf, BUFLEN, out1);
 
-	if(trivium_set_key_and_iv(ctx, (uint8_t *)key, 10, iv, 10)) {
+	trivium_init(&ctx);
+
+	if(trivium_set_key_and_iv(&ctx, (uint8_t *)key, 10, iv, 10)) {
 		printf("Trivium context filling error!\n");
 		exit(1);
 	}
 
-	trivium_encrypt(ctx, out1, BUFLEN, out2);
-
-	trivium_context_free(&ctx);
+	trivium_encrypt(&ctx, out1, BUFLEN, out2);
 
 	printf("Run time = %d\n\n", time_stop());
 
