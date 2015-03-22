@@ -17,7 +17,7 @@
 
 #include "trivium.h"
 
-#define TRIVIUM		80
+#define TRIVIUM		10
 
 // Selecting the byte order
 #if __BYTE_ORDER == __BIG_ENDIAN
