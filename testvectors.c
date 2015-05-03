@@ -21,16 +21,12 @@ main(void)
 	
 	struct trivium_context ctx;
 
-	trivium_init(&ctx);
-
 	if(trivium_set_key_and_iv(&ctx, key1, 10, iv1, 10)) {
 		printf("Trivium context filling error!\n");
 		exit(1);
 	}
 	
 	trivium_test_vectors(&ctx);
-
-	trivium_init(&ctx);
 
 	if(trivium_set_key_and_iv(&ctx, key2, 10, iv2, 10)) {
 		printf("Trivium context filling error!\n");

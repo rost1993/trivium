@@ -81,7 +81,7 @@
 }
 
 // Trivium initialization function
-void
+static void
 trivium_init(struct trivium_context *ctx)
 {
 	memset(ctx, 0, sizeof(*ctx));
@@ -127,6 +127,8 @@ trivium_keysetup(struct trivium_context *ctx)
 int
 trivium_set_key_and_iv(struct trivium_context *ctx, const uint8_t *key, const int keylen, const uint8_t iv[10], const int ivlen)
 {
+	trivium_init(ctx);
+	
 	if((keylen > 0) && (keylen <= TRIVIUM))
 		ctx->keylen = keylen;
 	else
@@ -146,14 +148,14 @@ trivium_set_key_and_iv(struct trivium_context *ctx, const uint8_t *key, const in
 }
 
 /*
- * Trivium encrypt algorithm.
+ * Trivium crypt algorithm.
  * ctx - pointer on trivium context
  * buf - pointer on buffer data
  * buflen - length the data buffer
  * out - pointer on output array
 */
 void
-trivium_encrypt(struct trivium_context *ctx, const uint8_t *buf, uint32_t buflen, uint8_t *out)
+trivium_crypt(struct trivium_context *ctx, const uint8_t *buf, uint32_t buflen, uint8_t *out)
 {
 	uint32_t z, w[10], i;
 
@@ -173,13 +175,6 @@ trivium_encrypt(struct trivium_context *ctx, const uint8_t *buf, uint32_t buflen
 	}
 	
 	memcpy(ctx->w, w, sizeof(w));
-}
-
-// Trivium decrypt function. See trivium_encrypt
-void
-trivium_decrypt(struct trivium_context *ctx, const uint8_t *buf, uint32_t buflen, uint8_t *out)
-{
-	trivium_encrypt(ctx, buf, buflen, out);
 }
 
 #if __BYTE_ORDER == __BIG_ENDIAN
